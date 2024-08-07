@@ -42,7 +42,7 @@ function grid.draw()
 	 local tile = grid[y][x]
 	 local orig_x = (x-1)*TILE_SIZE
 	 local orig_y = (y-1)*TILE_SIZE
-
+	 trace(tile)
 	 tile_grp = tile_sprs[tile]
 	 spr(tile_grp[1], orig_x+120, orig_y, 1, 1, 0, 0,1,1)
 	 spr(tile_grp[2], orig_x+128, orig_y, 1, 1, 0, 0,1,1)
@@ -51,7 +51,12 @@ function grid.draw()
 	 
 	 -- rect(orig_x+120, orig_y, TILE_SIZE, TILE_SIZE, tile)
 	 if selected.x == x and selected.y == y then
-	    rectb(orig_x+120, orig_y, TILE_SIZE, TILE_SIZE, 13) -- Highlight selected tile
+	    color = 13
+	    if input_mode == InputModes.Swap then
+	       color = 4
+	    end
+	    rectb(orig_x+120, orig_y, TILE_SIZE, TILE_SIZE, color) -- Highlight selected tile
+
 	 end
       end
    end
@@ -115,12 +120,13 @@ function select_tile(dx, dy)
    if input_mode == InputModes.Select then
       selected = new_selected
    elseif input_mode == InputModes.Swap then
+      input_mode = InputModes.Select
       if new_selected.x > 0 and new_selected.x <= grid.width and new_selected.y > 0 and new_selected.y <= grid.height then
 	 if are_adjacent(selected, new_selected) then
 	    swap(selected, new_selected)
 	    matches = grid.find_matches()
 	    if #matches > 0 then
-	       remove_matches()
+	       --remove_matches()
 	    else
 	       swap(selected, new_selected)
 	    end

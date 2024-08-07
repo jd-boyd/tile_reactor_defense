@@ -3,7 +3,6 @@
 Queue = require("q")
 MC_Game = require("mc_lib")
 
-
 function TIC()
     if btnp(4) then -- 'Z' key to shoot
         MC_Game:add_bullet(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 10)
@@ -13,8 +12,9 @@ function TIC()
     MC_Game:draw()
 end
 
-
-MC_Game:init()
+function BOOT()
+   MC_Game:init()
+end
 
 -- <TILES>
 -- 000:4444444433344433333434424234334444433044343332423242332432443444

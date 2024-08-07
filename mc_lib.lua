@@ -1,3 +1,5 @@
+Queue = require('q')
+
 -- Constants
 SCREEN_WIDTH = 110
 SCREEN_HEIGHT = 126
@@ -124,7 +126,6 @@ function MC_Game:update()
 end
 
 function MC_Game:draw()
-   cls(0)
    map(0, 0, 30, 20, 0, 0, -1, 1, nil)
     if game_over then
         print("Game Over", SCREEN_WIDTH // 2 - 30, SCREEN_HEIGHT // 2 - 6, 12)

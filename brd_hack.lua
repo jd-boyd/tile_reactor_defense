@@ -1,20 +1,6 @@
--- Missile Command for TIC-80
-
-Queue = require("q")
-MC_Game = require("mc_lib")
+-- Tile Reactor Defense for TIC-80
 
 
-function TIC()
-    if btnp(4) then -- 'Z' key to shoot
-        MC_Game:add_bullet(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 10)
-    end
-
-    MC_Game:update()
-    MC_Game:draw()
-end
-
-
-MC_Game:init()
 
 -- <TILES>
 -- 000:4444444433344433333434424234334444433044343332423242332432443444

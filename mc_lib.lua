@@ -49,7 +49,7 @@ end
 function missiles.draw()
    for i, missile in ipairs(missiles) do
       --rect(missile.x, missile.y, 2, 4, 8)
-      spr(19, missile.x, missile.y, 1, 1, 0, 0,1,1)
+      spr(19, missile.x, missile.y, 0, 1, 0, 0,1,1)
    end
 end
 

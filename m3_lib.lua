@@ -27,12 +27,12 @@ function grid.init()
 end
 
 tile_sprs = {
-   {160, 161, 176, 177},
-   {162, 163, 178, 179},
-   {192, 193, 208, 209},
-   {194, 195, 210, 211},
-   {224, 225, 240, 241},
-   {226, 227, 242, 243},     
+   160,
+   162,
+   192,
+   194,
+   224,
+   226,
 }
 
 trace(tile_sprs)
@@ -46,7 +46,7 @@ function grid.draw()
 	 local orig_y = (y-1)*TILE_SIZE
 
 	 tile_grp = tile_sprs[tile]
-	 spr(tile_grp[1], orig_x+120, orig_y, 1, 1, 0, 0,2,2)
+	 spr(tile_grp, orig_x+120, orig_y, 1, 1, 0, 0,2,2)
 	 
 	 if selected.x == x and selected.y == y then
 	    color = 13

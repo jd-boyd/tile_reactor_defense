@@ -1,0 +1,17 @@
+podman run -it --rm -v ./:/work:z -w /work esolang/lua /bin/sh
+
+apk add luarocks
+apk add lua5.3-dev
+
+
+/usr/bin/luarocks-5.3 install luaunit
+
+
+apt update
+apt install -y lua5.4 luarocks golang
+/usr/bin/luarocks install luaunitb
+
+
+
+
+lua ./bundle.lua game_liba.lua enum.lua game_libb.lua > pack.lua

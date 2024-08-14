@@ -69,7 +69,12 @@ MC_Game = {
    score = 0,
    game_over = false,
 }
-function MC_Game:init()
+function MC_Game:init(events)
+   self.events = events
+   self.events:on('bullet', function()
+		     MC_Game:add_bullet()
+		     end
+		     )
     for i = 1, 3 do
         missiles.add()
     end
@@ -79,6 +84,7 @@ function MC_Game:init()
 end
 
 function MC_Game:add_bullet(x, y)
+   trace("Add bullet")
     local bullet = {
         x = x,
         y = y,

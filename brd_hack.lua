@@ -1,7 +1,10 @@
 -- Tile Reactor Defense for TIC-80
 
+Events = require("events")
 MC_Game = require("mc_lib")
 M3_Game = require("m3_lib")
+m3 = {}
+events = Events:new()
 
 function TIC()
     -- if btnp(4) then -- 'Z' key to shoot
@@ -9,38 +12,35 @@ function TIC()
     -- end
     handle_input()
 
-    cls(0)
-
     MC_Game:update()
 
+    cls(0)
     MC_Game:draw()    
-    M3_Game:draw()
-
+    m3:draw()
 end
 
 function BOOT()
-   MC_Game:init()
-   M3_Game:init()   
+   m3 = M3_Game:new()
+   MC_Game:init(events)
+   m3:init(events)   
 end
-
-
 
 -- Handle input
 function handle_input()
  if btnp(0) then -- Up
-    M3_Game:move_up()
+    m3:move_up()
  elseif btnp(1) then -- Down
-M3_Game:move_down()
+    m3:move_down()
  elseif btnp(2) then -- Left
-    M3_Game:move_left()
+    m3:move_left()
 
  elseif btnp(3) then -- Right
-    M3_Game:move_right()    
+    m3:move_right()    
  elseif btnp(4) then -- Select -- d
-    if input_mode == InputModes.Select then
-       input_mode = InputModes.Swap
+    if m3.input_mode == InputModes.Select then
+       m3.input_mode = InputModes.Swap
     else
-       input_mode = InputModes.Select
+       m3.input_mode = InputModes.Select
     end
  end
 end

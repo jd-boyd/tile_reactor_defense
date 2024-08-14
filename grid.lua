@@ -2,30 +2,34 @@ Grid = {height=GRID_HEIGHT, width=GRID_WIDTH}
 
 function Grid:new (w, h)
    o = {   height = h,
-	   width = w
+	   width = w,
+	   tile_cnt=0
    }   
    setmetatable(o, self)
    self.__index = self
-
- for y=1, h do
-  o[y] = {}
-  for x=1, w do
-   o[y][x] = 0
-  end
- end
-
    
+   for y=1, h do
+      o[y] = {}
+      for x=1, w do
+	 o[y][x] = 0
+      end
+   end
+  
    return o
 end
 
 
-function Grid:init(h, w)
+function Grid:init(tile_cnt)
+   self.tile_cnt = tile_cnt
  for y=1, self.height do
---  self[y] = {}
   for x=1, self.width do
-   self[y][x] = math.random(1, 6) -- Six types of tiles
+     self[y][x] = math.random(1, tile_cnt) -- Six types of tiles
   end
  end
+end
+
+function Grid:pt(x, y)
+   return {x=x, y=y}
 end
 
 function Grid:find_matches()
@@ -34,7 +38,7 @@ function Grid:find_matches()
   for x=1, self.width do
    local tile = self[y][x]
    if x <= self.width - 2 and self[y][x+1] == tile and self[y][x+2] == tile then
-    table.insert(matches, {x=x, y=y})
+      table.insert(matches, Grid:pt(x,y))
     table.insert(matches, {x=x+1, y=y})
     table.insert(matches, {x=x+2, y=y})
    end
@@ -48,33 +52,39 @@ function Grid:find_matches()
  return matches
 end
 
+
+function Grid:remove_cell(p)
+
+   for y=p.y, 2, -1 do
+      self[y][p.x] = self[y-1][p.x]
+   end
+   self[1][p.x] = math.random(1, self.tile_cnt)
+end
+
 -- Remove matches and fill the grid
 function Grid:remove_matches(matches)
  for _, match in ipairs(matches) do
-  self[match.y][match.x] = 0
+    self:remove_cell(match)
  end
- for x=1, self.width do
-  for y=self.height, 2, -1 do
-   if self[y][x] == 0 then
-    self[y][x] = self[y-1][x]
-    self[y-1][x] = 0
-   end
-  end
-  if self[1][x] == 0 then
-   self[1][x] = math.random(1, 3)
-  end
- end
+end
+
+function Grid:get(p)
+   return self[p.y][p.x]
+end
+
+function Grid:set(p, v)
+   self[p.y][p.x] = v
 end
 
 -- Swap tiles
 function Grid:swap(a, b)
- local temp = self[a.y][a.x]
- self[a.y][a.x] = self[b.y][b.x]
- self[b.y][b.x] = temp
+   local temp = self:get(a)
+   self[a.y][a.x] = self:get(b)
+   self[b.y][b.x] = temp
 end
 
 -- Check if two tiles are adjacent
-function are_adjacent(a, b)
+function Grid:are_adjacent(a, b)
  return math.abs(a.x - b.x) + math.abs(a.y - b.y) == 1
 end
 

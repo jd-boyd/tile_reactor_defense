@@ -11,10 +11,7 @@ GRID_HEIGHT = 8
 -- swap mode is picking a direction to swap two tiles.
 InputModes = Enum("Select", "Swap")
 
-
-M3_Game = {
-}
-
+M3_Game = {}
 
 function M3_Game:new ()
    o = {
@@ -28,7 +25,6 @@ function M3_Game:new ()
    self.__index = self
    return o
 end
-
 
 -- Variables
 grid = Grid:new(GRID_WIDTH, GRID_HEIGHT) --{height=GRID_HEIGHT, width=GRID_WIDTH}
@@ -61,14 +57,14 @@ tile_sprs = {
    224,
    226,
 }
-
---trace(tile_sprs)
+trace("TS:")
 tprint(tile_sprs, 2)
 
 -- Draw the grid
 function M3_Game:grid_draw()
    -- trace("gd")
    -- tprint(self.grid, 1)
+   self.grid:test()
    for y=1, self.grid.height do
       for x=1, self.grid.width do
 	 local tile = self.grid[y][x]
@@ -81,6 +77,7 @@ function M3_Game:grid_draw()
 	 
 	 if self.selected.x == x and self.selected.y == y then
 	    local color = 13
+	    trace("selected: " .. x .. " " .. y .. " " .. self.grid[y][x] .. " " .. tile_sprs[self.grid[y][x]])
 	    if self.input_mode == InputModes.Swap then
 	       color = 4
 	    end
@@ -146,10 +143,12 @@ end
 function M3_Game:init (events)
    self.events = events
    self.grid:init(6)
+   self.grid:test()
    local clean = self.grid:find_matches()
    if #clean then
       self.grid:remove_matches(clean)
    end
+   self.grid:test()   
 end
 
 return M3_Game

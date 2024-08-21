@@ -154,7 +154,6 @@ function MC_Game:draw()
       for i, bullet in ipairs(self.bullets) do
 	 rect(bullet.x, bullet.y, 1, bullet.y, 12)
 	 print(bullet.x .. "," .. math.floor(bullet.y), bullet.x+5, bullet.y, 12)      
-	       
       end
       print("Score: " .. self.score, 125, 130, 12)
    end

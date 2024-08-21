@@ -18,15 +18,29 @@ function Grid:new (w, h)
    return o
 end
 
-
 function Grid:init(tile_cnt)
    self.tile_cnt = tile_cnt
  for y=1, self.height do
-  for x=1, self.width do
-     self[y][x] = math.random(1, tile_cnt) -- Six types of tiles
+    for x=1, self.width do
+       local r =  math.random(1, tile_cnt) -- Six types of tiles
+--       trace("new tile: " .. r .. " " .. x .. " " .. y)
+     self[y][x] = r
   end
  end
 end
+
+
+function Grid:test()
+ for y=1, self.height do
+    for x=1, self.width do
+       local r = self[y][x] 
+  --     trace("test tile: " .. r .. " " .. x .. " " .. y)
+       assert (r ~= 0)
+
+  end
+ end
+end
+
 
 function Grid:pt(x, y)
    return {x=x, y=y}
@@ -56,9 +70,12 @@ end
 function Grid:remove_cell(p)
 
    for y=p.y, 2, -1 do
+      trace('rc: ' .. p.x .. " " .. y)
       self[y][p.x] = self[y-1][p.x]
    end
-   self[1][p.x] = math.random(1, self.tile_cnt)
+   local r = math.random(1, self.tile_cnt)
+   trace('nc: ' .. p.x .. " " .. 1 .. " " .. r)   
+   self[1][p.x] = r
 end
 
 -- Remove matches and fill the grid

@@ -1,5 +1,3 @@
-Queue = require('q')
-
 -- Constants
 PLAY_WIDTH = 110
 PLAY_HEIGHT = 126
@@ -38,7 +36,7 @@ MC_Game = {}
 
 function MC_Game:new ()
    o =  {
-      missiles = Queue:new(),
+      missiles = {}, 
       bullets = {},
       explosions = {},
       score = 0,
@@ -58,7 +56,11 @@ function MC_Game:missiles_add ()
         target_y = PLAY_HEIGHT,
         speed = MISSILE_SPEED
     })
-    self.missiles:pushtail(missile)
+    table.insert(self.missiles, missile)
+    trace("Current missiles: ")
+    for i, missile in ipairs(self.missiles) do
+       trace(i .. " " .. missile.x .. " " .. missile.y)
+    end
     self.last_add = time()
 end
 
@@ -73,21 +75,19 @@ end
 function MC_Game:missiles_update()
     for i, missile in ipairs(self.missiles) do
        missile:update() 
-        if missile.y >= missile.target_y then
-	   --game_over = true
-        end
+       if missile.y >= missile.target_y then
+	  table.remove(self.missiles, i)
+       end
     end
 end
 
 function MC_Game:init(events)
    trace("MC_Game:init")
-   
    self.events = events
-   local save_self = self
    self.events:on('bullet', function()
-		     local m = save_self.missiles:peekhead()
+		     local m = self.missiles[1]
 		     trace("NextM: " .. m.x .. " " .. m.y)
-		     save_self:add_bullet(m.x+4, PLAY_HEIGHT - 10)
+		     self:add_bullet(m.x+4, PLAY_HEIGHT - 10)
 		     end
 		     )
     for i = 1, 3 do
@@ -123,13 +123,12 @@ function MC_Game:update()
     -- Check collisions
     for i = #self.bullets, 1, -1 do
         local bullet = self.bullets[i]
-        for j = #self.missiles, 1, -1 do
-            local missile = self.missiles[j]
-            if math.abs(bullet.x - missile.x) < 5 and math.abs(bullet.y - missile.y) < 5 then
-                table.remove(self.bullets, i)
-		self.missiles.pophead(j)
+        for j, missile in ipairs(self.missiles) do 
+            if math.abs(bullet.x - missile.x) < 7 and math.abs(bullet.y - missile.y) < 5 then
+	       trace("BH!")
+	       table.remove(self.bullets, i)
+	       table.remove(self.missiles, j)
                 self.score = self.score + 1
-                --add_missile()
                 break
             end
         end

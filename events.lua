@@ -4,6 +4,7 @@
 -- Simen Li <simenkid@gmail.com>
 -- Original Source: https://raw.githubusercontent.com/simenkid/lua-events/master/events_simplified.lua
 ------------------------------------------------------------------------------
+
 local PFX = '_n_'
 local PFX_LEN = #PFX
 local Events = {}
@@ -64,17 +65,13 @@ function Events:emit(ev, ...)
     trace('a ')
     tprint(argus)
 
-    if unpack then
-       trace('up')
-    else
-       trace('np')
-    end
-    
     local function exec(tbl)
        for n, lsn in ipairs(tbl) do
 	  trace('n ' .. n)
 	  local status, err = pcall(lsn, table.unpack(argus))
-	  if not (status) then print(string.sub(_, PFX_LEN + 1) .. " emit error: " .. tostring(err)) end
+	  if not (status) then
+	     trace(n .. " emit error: " .. tostring(err))
+	  end
         end
     end
 

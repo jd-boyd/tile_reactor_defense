@@ -1,10 +1,10 @@
 Queue = require('q')
 
 -- Constants
-SCREEN_WIDTH = 110
-SCREEN_HEIGHT = 126
+PLAY_WIDTH = 110
+PLAY_HEIGHT = 126
 MISSILE_SPEED = 0.125
-BULLET_SPEED = 1
+BULLET_SPEED = 0.1
 
 -- Classes
 
@@ -33,53 +33,65 @@ function Missile:update()
 end
 
 -- Variables
-missiles = Queue:new()
-missiles.last_add = 0
-function missiles.add ()
+
+MC_Game = {}
+
+function MC_Game:new ()
+   o =  {
+      missiles = Queue:new(),
+      bullets = {},
+      explosions = {},
+      score = 0,
+      game_over = false,
+      last_add = 0,
+   }
+   setmetatable(o, self)
+   self.__index = self
+   return o
+end
+
+function MC_Game:missiles_add ()
     local missile = Missile:new({
-        x = math.random(0, SCREEN_WIDTH),
+        x = math.random(0, PLAY_WIDTH),
         y = 0,
-        target_x = math.random(0, SCREEN_WIDTH),
-        target_y = SCREEN_HEIGHT,
+        target_x = math.random(0, PLAY_WIDTH),
+        target_y = PLAY_HEIGHT,
         speed = MISSILE_SPEED
     })
-    missiles:pushtail(missile)
-    missiles.last_add = time()
+    self.missiles:pushtail(missile)
+    self.last_add = time()
 end
-function missiles.draw()
-   for i, missile in ipairs(missiles) do
+
+function MC_Game:missiles_draw()
+   for i, missile in ipairs(self.missiles) do
       spr(19, missile.x, missile.y, 0, 1, 0, 0,1,1)
+      print(missile.x .. "," .. math.floor(missile.y),
+	    missile.x+10, missile.y, 12)      
    end
 end
 
-function missiles.update()
-    for i, missile in ipairs(missiles) do
+function MC_Game:missiles_update()
+    for i, missile in ipairs(self.missiles) do
        missile:update() 
         if missile.y >= missile.target_y then
-	   game_over = true
+	   --game_over = true
         end
     end
 end
 
-
-MC_Game = {
-   bullets = {},
-   explosions = {},
-   score = 0,
-   game_over = false,
-}
 function MC_Game:init(events)
+   trace("MC_Game:init")
+   
    self.events = events
+   local save_self = self
    self.events:on('bullet', function()
-		     local m = missiles[missiles.first]
-		     MC_Game:add_bullet(m.x, SCREEN_HEIGHT - 10)
+		     local m = save_self.missiles:peekhead()
+		     trace("NextM: " .. m.x .. " " .. m.y)
+		     save_self:add_bullet(m.x+4, PLAY_HEIGHT - 10)
 		     end
 		     )
     for i = 1, 3 do
-        missiles.add()
-    end
-    for i, v in ipairs(missiles) do
-       trace(i,v)
+       self:missiles_add()
     end
 end
 
@@ -97,10 +109,10 @@ function MC_Game:update()
     if self.game_over then return end
 
     -- Update missiles
-    missiles.update()
+    self:missiles_update()
 
-    if time() - missiles.last_add > 5000 then
-       missiles.add()
+    if time() - self.last_add > 5000 then
+       self:missiles_add()
     end
     
     -- Update bullets
@@ -111,13 +123,13 @@ function MC_Game:update()
     -- Check collisions
     for i = #self.bullets, 1, -1 do
         local bullet = self.bullets[i]
-        for j = #missiles, 1, -1 do
-            local missile = missiles[j]
+        for j = #self.missiles, 1, -1 do
+            local missile = self.missiles[j]
             if math.abs(bullet.x - missile.x) < 5 and math.abs(bullet.y - missile.y) < 5 then
-                table.remove(bullets, i)
-                table.remove(missiles, j)
+                table.remove(self.bullets, i)
+		self.missiles.pophead(j)
                 self.score = self.score + 1
-                add_missile()
+                --add_missile()
                 break
             end
         end
@@ -134,16 +146,18 @@ end
 function MC_Game:draw()
    map(0, 0, 30, 30, 0, 0, -1, 1, nil)
    if game_over then
-      local text_x = SCREEN_WIDTH // 2 - 30
-      print("Game Over", text_x, SCREEN_HEIGHT // 2 - 6, 12)
-      print("Score: " .. MC_Game.score, text_x, SCREEN_HEIGHT // 2 + 6, 12)
+      local text_x = PLAY_WIDTH // 2 - 30
+      print("Game Over", text_x, PLAY_HEIGHT // 2 - 6, 12)
+      print("Score: " .. MC_Game.score, text_x, PLAY_HEIGHT // 2 + 6, 12)
    else
-      missiles.draw()
+      self:missiles_draw()
       
       for i, bullet in ipairs(self.bullets) do
 	 rect(bullet.x, bullet.y, 1, bullet.y, 12)
+	 print(bullet.x .. "," .. math.floor(bullet.y), bullet.x+5, bullet.y, 12)      
+	       
       end
-      --print("Score: " .. score, 5, 5, 12)
+      print("Score: " .. self.score, 125, 130, 12)
    end
 end
 

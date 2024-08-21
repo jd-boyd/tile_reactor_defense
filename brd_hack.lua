@@ -3,6 +3,7 @@
 Events = require("events")
 MC_Game = require("mc_lib")
 M3_Game = require("m3_lib")
+mc = {}
 m3 = {}
 events = Events:new()
 
@@ -12,16 +13,17 @@ function TIC()
     -- end
     handle_input()
 
-    MC_Game:update()
+    mc:update()
 
     cls(0)
-    MC_Game:draw()    
+    mc:draw()    
     m3:draw()
 end
 
 function BOOT()
+   mc = MC_Game:new()
    m3 = M3_Game:new()
-   MC_Game:init(events)
+   mc:init(events)
    m3:init(events)   
 end
 

@@ -1,4 +1,3 @@
-
 Grid = require('./grid')
 Enum = require("./enum")
 
@@ -20,6 +19,7 @@ function M3_Game:new ()
       --ctrl_mode = 
       matches = {},
       input_mode = InputModes.Select,
+      particles = {},
    }   
    setmetatable(o, self)
    self.__index = self
@@ -49,6 +49,8 @@ function tprint (tbl, indent)
   end
 end
 
+part_sprs = {7, 5, 7}
+
 tile_sprs = {
    160,
    162,
@@ -59,6 +61,14 @@ tile_sprs = {
 }
 trace("TS:")
 tprint(tile_sprs, 2)
+
+function new_part(p) 
+   return {
+      x=p.x,
+      y=p.y,
+      life=12
+   }
+end
 
 -- Draw the grid
 function M3_Game:grid_draw()
@@ -107,6 +117,9 @@ function M3_Game:select_tile(dx, dy)
 	    self.grid:swap(selected, new_selected)
 	    matches = self.grid:find_matches()
 	    if #matches > 0 then
+	       for i, m in pairs(matches) do
+		  table.insert(self.particles, new_part(m))
+	       end
 	       self.grid:remove_matches(matches)
 	       self.events:emit('bullet', 0)
 	    else
@@ -136,8 +149,27 @@ function M3_Game:move_right ()
    self:select_tile(1, 0)
 end
 
+function mod(a, b)
+   return a - math.floor(a/b)*b
+end
+
 function M3_Game:draw ()
    self:grid_draw()
+   if #self.particles > 0 then
+      trace('drawing particles: ' .. #self.particles)
+      for i, m in pairs(self.particles) do
+	 local orig_x = (m.x-1)*TILE_SIZE
+	 local orig_y = (m.y-1)*TILE_SIZE
+	 local part_num =  mod(m.life, 4)
+	 local tile_grp = part_sprs[m.life]
+	 --trace(tile .. " " .. tile_grp)
+	 spr(tile_grp, orig_x+120, orig_y, -1, 1, 0, 0,2,2)
+	 m.life = m.life -1
+	 if m.life == 0 then
+	    table.remove(self.particles, i)
+	 end
+      end
+   end
 end
 
 function M3_Game:init (events)

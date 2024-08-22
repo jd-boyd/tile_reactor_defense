@@ -67,8 +67,8 @@ end
 function MC_Game:missiles_draw()
    for i, missile in ipairs(self.missiles) do
       spr(19, missile.x, missile.y, 0, 1, 0, 0,1,1)
-      print(missile.x .. "," .. math.floor(missile.y),
-	    missile.x+10, missile.y, 12)      
+      -- print(missile.x .. "," .. math.floor(missile.y),
+      -- 	    missile.x+10, missile.y, 12)      
    end
 end
 

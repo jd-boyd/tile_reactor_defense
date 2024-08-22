@@ -54,7 +54,7 @@ function MC_Game:missiles_add ()
         x = math.random(0, PLAY_WIDTH),
         y = 0,
         target_x = math.random(0, PLAY_WIDTH),
-        target_y = PLAY_HEIGHT,
+        target_y = PLAY_HEIGHT-10,
         speed = MISSILE_SPEED
     })
     table.insert(self.missiles, missile)
@@ -77,7 +77,14 @@ function MC_Game:missiles_update()
     for i, missile in ipairs(self.missiles) do
        missile:update() 
        if missile.y >= missile.target_y then
+	  self.score = self.score - 1
+	  if self.score < 0 then
+	     self.score = 0
+	  end
 	  table.remove(self.missiles, i)
+	  table.insert(self.particles, new_part({x = missile.x,
+						 y = missile.y}))
+	  
        end
     end
 end
@@ -91,9 +98,9 @@ function MC_Game:init(events)
 		     self:add_bullet(m.x+4, PLAY_HEIGHT - 10)
 		     end
 		     )
-    for i = 1, 3 do
-       self:missiles_add()
-    end
+   --for i = 1, 3 do
+   self:missiles_add()
+   -- end
 end
 
 function MC_Game:add_bullet(x, y)
@@ -151,7 +158,7 @@ function new_part(p)
    return {
       x=p.x,
       y=p.y,
-      life=24
+      life=60
    }
 end
 
@@ -176,7 +183,7 @@ function MC_Game:draw()
       for i, m in pairs(self.particles) do
 	 local orig_x = m.x
 	 local orig_y = m.y
-	 local part_num =  mod(m.life, 8)
+	 local part_num =  mod(m.life, 20)
 	 local tile_grp = part_sprs[m.life]
 	 --trace(tile .. " " .. tile_grp)
 	 spr(tile_grp, orig_x, orig_y, 0, 1, 0, 0,1,1)

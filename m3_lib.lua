@@ -49,7 +49,7 @@ function tprint (tbl, indent)
   end
 end
 
-part_sprs = {7, 5, 7}
+local part_sprs = {7, 5, 7}
 
 tile_sprs = {
    160,
@@ -87,7 +87,7 @@ function M3_Game:grid_draw()
 	 
 	 if self.selected.x == x and self.selected.y == y then
 	    local color = 13
-	    trace("selected: " .. x .. " " .. y .. " " .. self.grid[y][x] .. " " .. tile_sprs[self.grid[y][x]])
+	    --trace("selected: " .. x .. " " .. y .. " " .. self.grid[y][x] .. " " .. tile_sprs[self.grid[y][x]])
 	    if self.input_mode == InputModes.Swap then
 	       color = 4
 	    end
@@ -156,7 +156,7 @@ end
 function M3_Game:draw ()
    self:grid_draw()
    if #self.particles > 0 then
-      trace('drawing particles: ' .. #self.particles)
+      trace('drawing m3 particles: ' .. #self.particles)
       for i, m in pairs(self.particles) do
 	 local orig_x = (m.x-1)*TILE_SIZE
 	 local orig_y = (m.y-1)*TILE_SIZE

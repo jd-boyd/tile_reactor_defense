@@ -2,7 +2,7 @@
 PLAY_WIDTH = 110
 PLAY_HEIGHT = 126
 MISSILE_SPEED = 0.125
-BULLET_SPEED = 0.1
+BULLET_SPEED = 0.5
 
 -- Classes
 
@@ -42,6 +42,7 @@ function MC_Game:new ()
       score = 0,
       game_over = false,
       last_add = 0,
+      particles = {},
    }
    setmetatable(o, self)
    self.__index = self
@@ -126,6 +127,8 @@ function MC_Game:update()
         for j, missile in ipairs(self.missiles) do 
             if math.abs(bullet.x - missile.x) < 7 and math.abs(bullet.y - missile.y) < 5 then
 	       trace("BH!")
+	       table.insert(self.particles, new_part({x = missile.x,
+						      y = missile.y}))
 	       table.remove(self.bullets, i)
 	       table.remove(self.missiles, j)
                 self.score = self.score + 1
@@ -142,6 +145,16 @@ function MC_Game:update()
     end
 end
 
+local part_sprs = {66, 67, 68}
+
+function new_part(p) 
+   return {
+      x=p.x,
+      y=p.y,
+      life=24
+   }
+end
+
 function MC_Game:draw()
    map(0, 0, 30, 30, 0, 0, -1, 1, nil)
    if game_over then
@@ -153,10 +166,27 @@ function MC_Game:draw()
       
       for i, bullet in ipairs(self.bullets) do
 	 rect(bullet.x, bullet.y, 1, bullet.y, 12)
-	 print(bullet.x .. "," .. math.floor(bullet.y), bullet.x+5, bullet.y, 12)      
+	 --print(bullet.x .. "," .. math.floor(bullet.y), bullet.x+5, bullet.y, 12)      
       end
       print("Score: " .. self.score, 125, 130, 12)
    end
+
+   if #self.particles > 0 then
+      trace('drawing mc particles: ' .. #self.particles)
+      for i, m in pairs(self.particles) do
+	 local orig_x = m.x
+	 local orig_y = m.y
+	 local part_num =  mod(m.life, 8)
+	 local tile_grp = part_sprs[m.life]
+	 --trace(tile .. " " .. tile_grp)
+	 spr(tile_grp, orig_x, orig_y, 0, 1, 0, 0,1,1)
+	 m.life = m.life -1
+	 if m.life == 0 then
+	    table.remove(self.particles, i)
+	 end
+      end
+   end
+   
 end
 
 return MC_Game

@@ -100,7 +100,23 @@ end
 
 -- Select tile
 function M3_Game:select_tile(dx, dy)
-   local new_selected = self.grid:pt(self.selected.x + dx, self.selected.y + dy)
+   local new_x = self.selected.x + dx
+   if new_x < 1 then
+      new_x = 1
+   end
+   if new_x > self.grid.width then
+      new_x = self.grid.width
+   end
+
+   local new_y = self.selected.y + dy
+   if new_y < 1 then
+      new_y = 1
+   end
+   if new_y > self.grid.height then
+      new_y = self.grid.height 
+   end
+   
+   local new_selected = self.grid:pt(new_x, new_y)
 
    -- trace("selected:")
    -- tprint(self.selected, 1)

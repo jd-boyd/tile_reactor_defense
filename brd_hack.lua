@@ -1,4 +1,10 @@
--- Tile Reactor Defense for TIC-80
+-- title:   Tile Reactor Defense
+-- author:  jdboyd@jdboyd.net
+-- desc:    A mashup of a match-3 tile game and missile command.
+-- site:    https://github.com/jd-boyd/bubble_reactor_defense/
+-- license: BSD License
+-- version: 0.1
+-- script:  lua
 
 Events = require("events")
 MC_Game = require("mc_lib")

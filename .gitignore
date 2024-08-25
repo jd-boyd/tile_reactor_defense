@@ -1,6 +1,7 @@
 .local
 
 trd.lua
+trd.tic
 
 #emacs
 \#*

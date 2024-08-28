@@ -37,6 +37,7 @@ function Grid:test()
        local r = self[y][x] 
   --     trace("test tile: " .. r .. " " .. x .. " " .. y)
        assert (r ~= 0)
+       
 
   end
  end
@@ -65,8 +66,8 @@ function Grid:find_matches()
   end
  end
 
- match_set = Set(matches)
- return get_keys(match_set)
+ match_set = Set:new(matches)
+ return match_set:to_list()
  -- return matches
 end
 

@@ -1,4 +1,5 @@
-Grid = {height=GRID_HEIGHT, width=GRID_WIDTH}
+local Grid = {height=GRID_HEIGHT, width=GRID_WIDTH}
+local Set = require('set')
 
 function Grid:new (w, h)
    o = {   height = h,
@@ -63,7 +64,10 @@ function Grid:find_matches()
    end
   end
  end
- return matches
+
+ match_set = Set(matches)
+ return get_keys(match_set)
+ -- return matches
 end
 
 

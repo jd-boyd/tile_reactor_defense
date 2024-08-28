@@ -49,7 +49,7 @@ function tprint (tbl, indent)
   end
 end
 
-local part_sprs = {7, 5, 7}
+local part_sprs = {5, 7, 9, 11}
 
 tile_sprs = {
    160,
@@ -176,7 +176,7 @@ function M3_Game:draw ()
       for i, m in pairs(self.particles) do
 	 local orig_x = (m.x-1)*TILE_SIZE
 	 local orig_y = (m.y-1)*TILE_SIZE
-	 local part_num =  mod(m.life, 4)
+	 local part_num =  mod(m.life, #part_sprs)
 	 local tile_grp = part_sprs[m.life]
 	 --trace(tile .. " " .. tile_grp)
 	 spr(tile_grp, orig_x+120, orig_y, -1, 1, 0, 0,2,2)

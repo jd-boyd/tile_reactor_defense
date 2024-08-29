@@ -1,9 +1,7 @@
 lu = require('luaunit')
 Grid = require('grid')
-
-function TestListCompare()
-   lu.assertEquals(1, 1)
-end
+Set = require('set')
+Pt = require('pt')
 
 function TestNew()
    g = Grid:new(3, 3)
@@ -48,8 +46,8 @@ function TestSwapRight()
    g[2] = {4, 5, 6}
    g[3] = {7, 8, 9}
 
-   g:swap({x= 2, y=2},
-      {x= 3, y=2})
+   g:swap(Pt:new{x= 2, y=2},
+	  Pt:new{x= 3, y=2})
 
    row2 = g[2]
    
@@ -68,9 +66,11 @@ function TestFindMatchesMinimalVert()
 
    local ret = g:find_matches()
 
-   lu.assertEquals(ret,
-    {{x=1, y=1}, {x=1, y=2}, {x=1, y=3}}
-   )
+   lu.assertEquals(Set:new(ret),
+		   Set:new
+		   {Pt:new{x=1, y=1},
+		    Pt:new{x=1, y=2},
+		    Pt:new{x=1, y=3}})
 end
 
 function TestFindMatches5Vert()
@@ -84,12 +84,15 @@ function TestFindMatches5Vert()
 
    local ret = g:find_matches()
 
-   lu.assertEquals(ret,
-		   {{x=1, y=1},
-		      {x=1, y=2},
-		      {x=1, y=3},
-		      {x=1, y=4},
-		      {x=1, y=5}
+   lu.assertEquals(getmetatable(ret[1]), Pt)
+   
+   lu.assertEquals(Set:new(ret),
+		   Set:new{
+		      Pt:new{x=1, y=1},
+		      Pt:new{x=1, y=2},
+		      Pt:new{x=1, y=3},
+		      Pt:new{x=1, y=4},
+		      Pt:new{x=1, y=5}
 		   }
    )
 end
@@ -107,8 +110,10 @@ function TestFindMatchesMinimalHorz()
 
    local ret = g:find_matches()
 
-   lu.assertEquals(ret,
-		   {{x=1, y=1}, {x=2, y=1}, {x=3, y=1}}
+   lu.assertEquals(Set:new(ret),
+		   Set:new({Pt:new{x=1, y=1},
+			    Pt:new{x=2, y=1},
+			    Pt:new{x=3, y=1}})
    )
 end
 
@@ -122,7 +127,7 @@ function TestRemoveCell()
    g[2] = {4, 5, 6}
    g[3] = {7, 8, 9}
 
-   g:remove_cell(g:pt(2, 3))
+   g:remove_cell(Pt:new(2, 3))
 
    lu.assertEquals(g[3], {7, 5, 9})
    lu.assertEquals(g[2], {4, 2, 6})   
@@ -131,7 +136,6 @@ end
 
 
 local r = lu.LuaUnit.run()
-
 os.exit( r )
 
 

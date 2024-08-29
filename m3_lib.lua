@@ -1,5 +1,6 @@
 Grid = require('./grid')
 Enum = require("./enum")
+Pt = require("./pt")
 
 -- Constants
 TILE_SIZE = 16
@@ -116,7 +117,7 @@ function M3_Game:select_tile(dx, dy)
       new_y = self.grid.height 
    end
    
-   local new_selected = self.grid:pt(new_x, new_y)
+   local new_selected = Pt:new(new_x, new_y)
 
    -- trace("selected:")
    -- tprint(self.selected, 1)

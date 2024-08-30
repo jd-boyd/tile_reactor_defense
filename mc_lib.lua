@@ -179,7 +179,7 @@ function MC_Game:draw()
    end
 
    if #self.particles > 0 then
-      trace('drawing mc particles: ' .. #self.particles)
+      -- trace('drawing mc particles: ' .. #self.particles)
       for i, m in pairs(self.particles) do
 	 local orig_x = m.x
 	 local orig_y = m.y

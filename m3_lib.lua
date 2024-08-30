@@ -16,9 +16,9 @@ M3_Game = {}
 function M3_Game:new ()
    o = {
       grid = Grid:new(GRID_WIDTH, GRID_HEIGHT), 
-      selected = {x = math.ceil(grid.width/2), y = grid.height/2},
+      selected = Pt:new{x = math.ceil(grid.width/2), y = grid.height/2},
       --ctrl_mode = 
-      matches = {},
+      --matches = {},
       input_mode = InputModes.Select,
       particles = {},
    }   
@@ -29,9 +29,9 @@ end
 
 -- Variables
 grid = Grid:new(GRID_WIDTH, GRID_HEIGHT) --{height=GRID_HEIGHT, width=GRID_WIDTH}
-selected = {x = math.ceil(grid.width/2), y = grid.height/2}
+--selected = {x = math.ceil(grid.width/2), y = grid.height/2}
 --ctrl_mode = 
-matches = {}
+--matches = {}
 
 function tprint (tbl, indent)
   if not indent then indent = 0 end
@@ -122,25 +122,27 @@ function M3_Game:select_tile(dx, dy)
    end
    
    local new_selected = Pt:new(new_x, new_y)
-  
+
+   trace('sels: ' .. tostring(self.selected) .. ' ' .. tostring(new_selected) )
+   
    if self.input_mode == InputModes.Select then
       self.selected = new_selected
    elseif self.input_mode == InputModes.Swap then
       self.input_mode = InputModes.Select
 
-      local ret = self.grid:allow_swap(selected, new_selected)
+      local ret = self.grid:allow_swap(self.selected, new_selected)
       local allowed = ret[1]
       local matches = ret[2]
-      trace('am: ' .. tostring(allowed) .. ' ' .. tostring(matches))
+      trace('allow?: ' .. tostring(allowed) .. ' ' .. tostring(matches))
       if allowed then
-	 self.grid:swap(selected, new_selected)
+	 self.grid:swap(self.selected, new_selected)
 	 for i, m in pairs(matches) do
 	    table.insert(self.particles, new_part(m))
 	 end
 	 self.grid:remove_matches(matches)
 	 self.events:emit('bullet', 0)
       end
-      selected=new_selected
+      self.selected=new_selected
    else
       -- error
    end

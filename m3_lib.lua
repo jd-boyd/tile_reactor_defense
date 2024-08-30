@@ -104,45 +104,41 @@ function M3_Game:select_tile(dx, dy)
    local new_x = self.selected.x + dx
    if new_x < 1 then
       new_x = 1
+      return
    end
    if new_x > self.grid.width then
       new_x = self.grid.width
+      return
    end
 
    local new_y = self.selected.y + dy
    if new_y < 1 then
       new_y = 1
+      return
    end
    if new_y > self.grid.height then
-      new_y = self.grid.height 
+      new_y = self.grid.height
+      return
    end
    
    local new_selected = Pt:new(new_x, new_y)
-
-   -- trace("selected:")
-   -- tprint(self.selected, 1)
-   
-   -- trace("new_sel:")
-   -- tprint(new_selected, 1)
-   
+  
    if self.input_mode == InputModes.Select then
       self.selected = new_selected
    elseif self.input_mode == InputModes.Swap then
       self.input_mode = InputModes.Select
-      if new_selected.x > 0 and new_selected.x <= self.grid.width and new_selected.y > 0 and new_selected.y <= self.grid.height then
-	 if self.grid:are_adjacent(selected, new_selected) then
-	    self.grid:swap(selected, new_selected)
-	    matches = self.grid:find_matches()
-	    if #matches > 0 then
-	       for i, m in pairs(matches) do
-		  table.insert(self.particles, new_part(m))
-	       end
-	       self.grid:remove_matches(matches)
-	       self.events:emit('bullet', 0)
-	    else
-	       self.grid:swap(selected, new_selected)
-	    end
+
+      local ret = self.grid:allow_swap(selected, new_selected)
+      local allowed = ret[1]
+      local matches = ret[2]
+      trace('am: ' .. tostring(allowed) .. ' ' .. tostring(matches))
+      if allowed then
+	 self.grid:swap(selected, new_selected)
+	 for i, m in pairs(matches) do
+	    table.insert(self.particles, new_part(m))
 	 end
+	 self.grid:remove_matches(matches)
+	 self.events:emit('bullet', 0)
       end
       selected=new_selected
    else

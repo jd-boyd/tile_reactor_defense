@@ -90,6 +90,20 @@ function Grid:set(p, v)
    self[p.y][p.x] = v
 end
 
+function Grid:allow_swap(a, b)
+   if not self:are_adjacent(a, b) then
+      return {false, {}}
+   end
+   self:swap(a, b)
+   local matches = self:find_matches()
+   print("Gas m: " .. #matches)
+   self:swap(a, b)
+   if #matches > 0 then
+      return {true, matches}
+   end
+   return {false, {}}
+end
+
 -- Swap tiles
 function Grid:swap(a, b)
    local temp = self:get(a)

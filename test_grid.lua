@@ -158,6 +158,78 @@ function TestRemoveCell()
 end
 
 
+function TestAreAdjacent()
+   local g = Grid:new(3, 3)
+
+   g[1] = {1, 2, 3}
+   g[2] = {1, 5, 6}
+   g[3] = {1, 8, 9}
+
+   lu.assertTrue(g:are_adjacent(Pt:new(1,1),
+				Pt:new(1,2)
+			       )
+   )
+   
+   lu.assertTrue(g:are_adjacent(Pt:new(1,1),
+				Pt:new(2,1)
+   ))
+   
+   lu.assertFalse(g:are_adjacent(Pt:new(1,1),
+				Pt:new(1,1)
+   ))
+   
+   lu.assertFalse(g:are_adjacent(Pt:new(1,1),
+				Pt:new(2,2)
+   ))
+         
+end
+
+function TestAllowSwap()
+   local g = Grid:new(3, 3)
+
+   g[1] = {1, 2, 3}
+   g[2] = {1, 5, 6}
+   g[3] = {7, 1, 9}
+
+
+   --g[3] = {7, 1, 9}
+   g:swap(Pt:new(2,3),
+	  Pt:new(1,3))
+   lu.assertEquals(g[3], {1, 7, 9})
+
+   g:swap(Pt:new(2,3),
+	  Pt:new(1,3))
+   lu.assertEquals(g[3], {7, 1, 9})
+
+   lu.assertEquals(g:allow_swap(Pt:new(2,3),
+				Pt:new(1,3)
+			       ),
+		   {true, {{x=1, y=1}, {x=1, y=2}, {x=1, y=3}}}
+   )
+
+   lu.assertEquals(g:allow_swap(Pt:new(1,3),
+				Pt:new(2,3)
+			       ),
+		   {true, {{x=1, y=1}, {x=1, y=2}, {x=1, y=3}}}
+   )
+
+   
+   lu.assertEquals(g:allow_swap(Pt:new(1,1),
+			       Pt:new(2,1)
+			       ),
+		   {false, {}}
+   )
+   
+   lu.assertEquals(g:allow_swap(Pt:new(2,1),
+				Pt:new(2,2)
+			       ),
+		   {false, {}}
+   )
+   
+end
+
+
+
 local r = lu.LuaUnit.run()
 os.exit( r )
 

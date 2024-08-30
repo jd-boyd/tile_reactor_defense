@@ -1,7 +1,7 @@
 lu = require('luaunit')
 Pt = require('pt')
 
-function TestNew()
+function TestEquals()
 
    p1 = Pt:new({x = 2, y = 3})
    p2 = Pt:new(2, 3)   
@@ -12,6 +12,17 @@ function TestNew()
 
    lu.assertNotEquals(p1, p3)   
    
+end
+
+
+function TestTs()
+
+   p1 = Pt:new({x = 2, y = 3})
+   p2 = Pt:new(2, 3)   
+
+   lu.assertEquals(tostring(p1), "Pt{2, 3}")
+  
+  
 end
 
 

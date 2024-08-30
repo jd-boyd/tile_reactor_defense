@@ -51,5 +51,9 @@ function Pt.__eq(a, b)
    return a.x == b.x and a.y == b.y
 end
 
+function Pt:__tostring()
+   return "Pt{" .. self.x .. ", " .. self.y .. "}"
+end
+
 
 return Pt

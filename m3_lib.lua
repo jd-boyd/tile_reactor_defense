@@ -17,8 +17,6 @@ function M3_Game:new ()
    o = {
       grid = Grid:new(GRID_WIDTH, GRID_HEIGHT), 
       selected = Pt:new{x = math.ceil(grid.width/2), y = grid.height/2},
-      --ctrl_mode = 
-      --matches = {},
       input_mode = InputModes.Select,
       particles = {},
    }   
@@ -29,9 +27,6 @@ end
 
 -- Variables
 grid = Grid:new(GRID_WIDTH, GRID_HEIGHT) --{height=GRID_HEIGHT, width=GRID_WIDTH}
---selected = {x = math.ceil(grid.width/2), y = grid.height/2}
---ctrl_mode = 
---matches = {}
 
 function tprint (tbl, indent)
   if not indent then indent = 0 end

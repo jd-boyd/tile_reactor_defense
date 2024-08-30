@@ -117,6 +117,29 @@ function TestFindMatchesMinimalHorz()
    )
 end
 
+function TestFindMatchesL()
+   local g = Grid:new(3, 3)
+
+   lu.assertEquals(g.height, 3)
+   lu.assertEquals(g.width, 3)   
+
+   g[1] = {1, 1, 1}
+   g[2] = {4, 5, 1}
+   g[3] = {1, 8, 1}
+
+   local ret = g:find_matches()
+
+   lu.assertEquals(Set:new(ret),
+		   Set:new({Pt:new{x=1, y=1},
+			    Pt:new{x=2, y=1},
+			    Pt:new{x=3, y=1},
+			    Pt:new{x=3, y=2},
+			    Pt:new{x=3, y=3},
+		   })
+   )
+end
+
+
 function TestRemoveCell()
    local g = Grid:new(3, 3)
 

@@ -1,6 +1,6 @@
-Grid = require('./grid')
-Enum = require("./enum")
-Pt = require("./pt")
+Grid = require('grid')
+Enum = require("enum")
+Pt = require("pt")
 
 -- Constants
 TILE_SIZE = 16
@@ -15,11 +15,11 @@ M3_Game = {}
 
 function M3_Game:new ()
    o = {
-      grid = Grid:new(GRID_WIDTH, GRID_HEIGHT), 
+      grid = Grid:new(GRID_WIDTH, GRID_HEIGHT),
       selected = Pt:new{x = math.ceil(grid.width/2), y = grid.height/2},
       input_mode = InputModes.Select,
       particles = {},
-   }   
+   }
    setmetatable(o, self)
    self.__index = self
    return o
@@ -36,9 +36,9 @@ function tprint (tbl, indent)
       trace(formatting)
       tprint(v, indent+1)
     elseif type(v) == 'boolean' then
-      trace(formatting .. tostring(v))      
+      trace(formatting .. tostring(v))
     elseif type(v) == 'function' then
-      trace(formatting .. "func")      
+      trace(formatting .. "func")
     else
       trace(formatting .. v)
     end
@@ -58,7 +58,7 @@ tile_sprs = {
 trace("TS:")
 tprint(tile_sprs, 2)
 
-function new_part(p) 
+function new_part(p)
    return {
       x=p.x,
       y=p.y,
@@ -80,14 +80,14 @@ function M3_Game:grid_draw()
 	 local tile_grp = tile_sprs[tile]
 	 --trace(tile .. " " .. tile_grp)
 	 spr(tile_grp, orig_x+120, orig_y, 1, 1, 0, 0,2,2)
-	 
+
 	 if self.selected.x == x and self.selected.y == y then
 	    local color = 13
 	    --trace("selected: " .. x .. " " .. y .. " " .. self.grid[y][x] .. " " .. tile_sprs[self.grid[y][x]])
 	    if self.input_mode == InputModes.Swap then
 	       color = 4
 	    end
-	    rectb(orig_x+120, orig_y, TILE_SIZE, TILE_SIZE, color) 
+	    rectb(orig_x+120, orig_y, TILE_SIZE, TILE_SIZE, color)
 
 	 end
       end
@@ -115,11 +115,11 @@ function M3_Game:select_tile(dx, dy)
       new_y = self.grid.height
       return
    end
-   
+
    local new_selected = Pt:new(new_x, new_y)
 
    trace('sels: ' .. tostring(self.selected) .. ' ' .. tostring(new_selected) )
-   
+
    if self.input_mode == InputModes.Select then
       self.selected = new_selected
    elseif self.input_mode == InputModes.Swap then
@@ -153,7 +153,7 @@ end
 
 function M3_Game:move_left ()
   self:select_tile(-1, 0)
-end      
+end
 
 function M3_Game:move_right ()
    self:select_tile(1, 0)
@@ -190,7 +190,7 @@ function M3_Game:init (events)
    if #clean then
       self.grid:remove_matches(clean)
    end
-   self.grid:test()   
+   self.grid:test()
 end
 
 return M3_Game

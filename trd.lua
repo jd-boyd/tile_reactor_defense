@@ -784,47 +784,88 @@ end
 
 -- BEGIN main.lua
 
+-- Game States
+GameStates = Enum("StartScreen", "Playing", "GameOver")
+current_state = GameStates.StartScreen
+
 mc = {}
 m3 = {}
 events = Events:new()
 
 function TIC()
-    -- if btnp(4) then -- 'Z' key to shoot
-    --     MC_Game:add_bullet(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 10)
-    -- end
     handle_input()
-
-    mc:update()
-
-    cls(0)
-    mc:draw()
-    m3:draw()
+    
+    if current_state == GameStates.StartScreen then
+        draw_start_screen()
+    elseif current_state == GameStates.Playing then
+        mc:update()
+        cls(0)
+        mc:draw()
+        m3:draw()
+    end
 end
 
-function BOOT()
+function draw_start_screen()
+   cls(0)
+   
+   -- Draw title using text
+   local title = "BUBBLE REACTOR DEFENCE"
+   local title_x = 120 - (#title * 6) // 2
+   print(title, title_x, 40, 12)
+   
+   -- Draw subtitle
+   local subtitle = "Match-3 meets Missile Command"
+   local subtitle_x = 120 - (#subtitle * 6) // 2
+   print(subtitle, subtitle_x, 60, 6)
+   
+   -- Draw instructions
+   print("Use arrow keys to move", 60, 90, 15)
+   print("Press Z to select/swap", 60, 100, 15)
+   print("Match 3+ tiles to fire!", 60, 110, 15)
+   
+   -- Draw start prompt (with blinking effect)
+   if math.floor(time() / 500) % 2 == 0 then
+      local start_text = "PRESS Z TO START"
+      local start_x = 120 - (#start_text * 6) // 2
+      print(start_text, start_x, 130, 14)
+   end
+end
+
+function start_game()
+   current_state = GameStates.Playing
    mc = MC_Game:new()
    m3 = M3_Game:new()
    mc:init(events)
    m3:init(events)
 end
 
+function BOOT()
+   current_state = GameStates.StartScreen
+end
+
 -- Handle input
 function handle_input()
- if btnp(0) then -- Up
-    m3:move_up()
- elseif btnp(1) then -- Down
-    m3:move_down()
- elseif btnp(2) then -- Left
-    m3:move_left()
- elseif btnp(3) then -- Right
-    m3:move_right()
- elseif btnp(4) then -- Select -- d
-    if m3.input_mode == InputModes.Select then
-       m3.input_mode = InputModes.Swap
-    else
-       m3.input_mode = InputModes.Select
+    if current_state == GameStates.StartScreen then
+        if btnp(4) then -- Z key to start
+            start_game()
+        end
+    elseif current_state == GameStates.Playing then
+        if btnp(0) then -- Up
+            m3:move_up()
+        elseif btnp(1) then -- Down
+            m3:move_down()
+        elseif btnp(2) then -- Left
+            m3:move_left()
+        elseif btnp(3) then -- Right
+            m3:move_right()
+        elseif btnp(4) then -- Select -- Z
+            if m3.input_mode == InputModes.Select then
+                m3.input_mode = InputModes.Swap
+            else
+                m3.input_mode = InputModes.Select
+            end
+        end
     end
- end
 end
 -- END main.lua
 
